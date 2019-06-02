@@ -1,31 +1,30 @@
 const puppeteer = require('puppeteer');
+var fs = require("fs");
 
 let browser;
 let page;
-let allJobs =[];
+let allJobs = [];
 let content;
 const startUrl = 'https://www.linkedin.com/jobs/search/?f_TPR=r26400&keywords=react.js';
 let startNumber = 0;
 
 const startPuppeteer = async () => {
   console.log('in')
-  browser = await puppeteer.launch({ headless: true, args: ['--disable-infobars, --disable-notifications'] });
-  // options = {
-    //   args: ['--disable-infobars']
-    // }
-    page = await browser.newPage();
-    // page.setCacheEnabled(false)
-    page.setDefaultNavigationTimeout(6000)
-    page.setDefaultTimeout(6000)
-    page.setViewport({ width: 1680, height: 850 })
-    await page.waitFor(2000);
-    console.log('out')
-    try {
-      await page.goto(startUrl)
-    } catch(error) {
-      console.log('error on initial page')
+  browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1680, height: 850, isLandscape: true, isMobile: false }, args: ['--disable-infobars, --disable-notifications'] });
+    // width: 1680, height: 850,
+  page = await browser.newPage();
+  await page.emulateMedia('screen')
+  await page.setCacheEnabled(false)
+  page.setDefaultTimeout(6000)
+  page.setDefaultNavigationTimeout(6000)
+  await page.waitFor(3000);
+  console.log('out')
+  try {
+    await page.goto(startUrl)
+  } catch (error) {
+    console.log('error on initial page')
   }
-  await page.waitFor(2000);
+  await page.waitFor(3000);
   console.log('first page loaded succesfully')
 }
 
@@ -41,7 +40,7 @@ const testElements = async () => {
       await page.waitForSelector('[data-id]', { timeout: 2000 })
       console.log('mobile did')
       returnedJobs = await getMobileJobs()
-    } catch(error) {
+    } catch (error) {
       console.log('both failed')
     }
   }
@@ -111,7 +110,7 @@ const getMobileJobs = async () => {
 // const checkStandard = async () => {
 //   try {
 //     await page.waitForSelector('[data-job-id]', { timeout: 2500 })
-    
+
 //   } catch (error) {
 //     checkMobile()
 //   }
@@ -121,7 +120,7 @@ const getMobileJobs = async () => {
 // const checkMobile = async () => {
 //   try {
 //     await page.waitForSelector('[data-id]', { timeout: 2500 })
-    
+
 //   } catch (error) {
 //     console.log('failed both')
 //   }
@@ -149,23 +148,32 @@ const runMethod = async () => {
 
 
   let initialPage = await testElements()
-  allJobs.push(initialPage.list)
+  allJobs = [...allJobs, ...initialPage.list]
+  // allJobs.push(initialPage.list)
 
 
   try {
     await page.goto(`${startUrl}&start=25`)
     await page.waitFor(2000);
-  } catch(error) {
+  } catch (error) {
     console.log('error on second page')
   }
-  
+
   await page.waitFor(2000);
   console.log('second page success')
   // content = await page.content()
   // console.log(content)
   let newJobs = await testElements()
-  await allJobs.push(newJobs.list)
-
+  // await allJobs.push(newJobs.list)
+  allJobs = [...allJobs, ...newJobs.list]
+  // fs.writeFile("./matrixtest.js", JSON.stringify(allJobs), function (err) {
+  //   if (err) {
+  //     console.log(err);
+  //   }
+  //   else {
+  //     console.log("Output saved to /matrixtest.js.");
+  //   }
+  // }); 
 
   // while(initialPage.next) {
   //   await page.goto(initialPage.next)
@@ -180,7 +188,7 @@ const runMethod = async () => {
   try {
     await browser.close();
 
-  } catch(error) {
+  } catch (error) {
     console.log('error closing')
   }
 }
