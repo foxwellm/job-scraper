@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer');
-var fs = require("fs");
+const fs = require("fs");
 
 let browser;
 let page;
@@ -100,7 +100,7 @@ const runMethod = async () => {
 
     const currentTime = Date.now()
 
-    fs.writeFile(`./reactJSAll${currentTime}.js`, JSON.stringify(allJobs), function (err) {
+    fs.writeFile(`./jobs/reactJSAll.js`, JSON.stringify(allJobs), function (err) {
       if (err) {
         console.log(err);
       }
