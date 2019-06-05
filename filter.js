@@ -31,12 +31,23 @@ checkCompany = (company) => {
 
 check = () => {
   for (job of testJobs) {
-    // checkTitle(job.title) ? removedJobs.push(job.title) : filteredJobs.push(job.title)
+    checkTitle(job.title) ? removedJobs.push(job.title) : filteredJobs.push(job.title)
     // checkBody(job.body) ? removedJobs.push(job.body) : filteredJobs.push(job.body)
-    checkCompany(job.companyText) || checkTitle(job.title) || checkBody(job.body) ? removedJobs.push(job) : filteredJobs.push(job)
+    // checkCompany(job.companyText) || checkTitle(job.title) || checkBody(job.body) ? removedJobs.push(job) : filteredJobs.push(job)
   }
+  writeJobs()
   console.log(filteredJobs)
-  // console.log(filteredJobs)
+}
+
+writeJobs = () => {
+  const parent = document.querySelector('#jobs')
+
+  const el = document.createElement('li')
+  filteredJobs.forEach(job => {
+    el.innerHTML=job
+    parent.appenChild(el)
+  })
+
 }
 
 const runFilter = async () => {

@@ -1,10 +1,10 @@
 {
   "name": "job-scraping",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
@@ -15,5 +15,15 @@
     "nightmare": "^3.0.2",
     "puppeteer": "^1.17.0",
     "request": "^2.88.0"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/foxwellm/job-scraper.git"
+  },
+  "bugs": {
+    "url": "https://github.com/foxwellm/job-scraper/issues"
+  },
+  "homepage": "https://github.com/foxwellm/job-scraper#readme",
+  "description": ""
 }
