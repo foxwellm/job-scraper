@@ -6,7 +6,7 @@ let page;
 let allJobs = [];
 
 const startPuppeteer = async () => {
-  browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1680, height: 850, isLandscape: true, isMobile: false }, args: ['--disable-infobars, --disable-notifications'] });
+  browser = await puppeteer.launch({ headless: true, defaultViewport: { width: 1680, height: 850, isLandscape: true, isMobile: false }, args: ['--disable-infobars, --disable-notifications'] });
   page = await browser.newPage();
   await page.emulateMedia('screen')
   await page.setCacheEnabled(false)
@@ -65,7 +65,7 @@ const runMethod = async () => {
   let startPaginationNumber = 1
   let passTest = false
 
-  await page.goto(`https://www.linkedin.com/jobs/react-js-jobs-united-states?keywords=react.js&f_TP=1&start=${startNumber}&count=25&trk=jobs_jserp_pagination_${startPaginationNumber}`)
+  await page.goto(`https://www.linkedin.com/jobs/react-native-jobs-united-states?keywords=react native&f_TP=1,2&start=${startNumber}&count=25&trk=jobs_jserp_pagination_${startPaginationNumber}`)
   await page.waitFor(3000);
 
   try {
@@ -87,8 +87,10 @@ const runMethod = async () => {
     startNumber = startNumber + 25
     startPaginationNumber++
 
+    //f_TP=1     f_TP=1,2
+
     while (startPaginationNumber <= endPaginationNumber) {
-      await page.goto(`https://www.linkedin.com/jobs/react-js-jobs-united-states?keywords=react.js&f_TP=1&start=${startNumber}&count=25&trk=jobs_jserp_pagination_${startPaginationNumber}`)
+      await page.goto(`https://www.linkedin.com/jobs/react-native-jobs-united-states?keywords=react native&f_TP=1,2&start=${startNumber}&count=25&trk=jobs_jserp_pagination_${startPaginationNumber}`)
       await page.waitFor(3000);
       console.log('page loaded')
       let pageJobs = await testElements()
@@ -98,14 +100,12 @@ const runMethod = async () => {
     }
 
 
-    const currentTime = Date.now()
-
-    fs.writeFile(`./jobs/reactJSAll.js`, JSON.stringify(allJobs), function (err) {
+    fs.writeFile(`./jobs/reactNativeAll.js`, JSON.stringify(allJobs), function (err) {
       if (err) {
         console.log(err);
       }
       else {
-        console.log("Output saved to /reactJS.js.");
+        console.log("Output saved to /reactNativeAll.js.");
       }
     });
   }

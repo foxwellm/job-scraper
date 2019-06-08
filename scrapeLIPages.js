@@ -3,17 +3,17 @@ var fs = require("fs");
 
 let browser;
 let page;
-const jobUrl = 'https://www.linkedin.com/jobs/search/?currentJobId=';
+// const jobUrl = 'https://www.linkedin.com/jobs/search/?currentJobId=';
 let allJobs = []
 // const testJobs = ['1302424599', '1301816978', '1301816648', '1300230670', '1163296300', '1295012818', '1300230689', '1163803997', '1301822304', '1247367503'];
 let testJobs
 
 
-
+//./jobs/allCombined.js
 const loadJobs = async () => {
-  await fs.readFile('./jobs/reactJSAll.js', async (err, data) => {
+  await fs.readFile('./jobs/allCombined.js', async (err, data) => {
     if (err) throw err;
-   testJobs = await JSON.parse(data)
+    testJobs = await JSON.parse(data)
   });
 }
 
@@ -42,6 +42,7 @@ const startPuppeteer = async () => {
 // }
 
 const scrapePage = async () => {
+  console.log('scraping')
   // console.log(await page.content())
   // let testBool = true;
   // try {
@@ -50,7 +51,7 @@ const scrapePage = async () => {
 
     const title = document.querySelector('.topcard__title') ? document.querySelector('.topcard__title').innerText : 'No title found'
     // const title = 'title'
-    const companyText = document.querySelector('.jobs-details-top-card__company-info a') ? document.querySelector('.jobs-details-top-card__company-info a').innerText
+    const company = document.querySelector('.jobs-details-top-card__company-info a') ? document.querySelector('.jobs-details-top-card__company-info a').innerText
       : document.querySelector('.jobs-details-top-card__company-info') ? document.querySelector('.jobs-details-top-card__company-info').innerText
         : document.querySelector('.topcard__flavor a') ? document.querySelector('.topcard__flavor a').innerText
           : document.querySelector('.topcard__flavor') ? document.querySelector('.topcard__flavor').innerText
@@ -60,11 +61,13 @@ const scrapePage = async () => {
       : document.querySelector('.description__text') ? document.querySelector('.description__text').innerText
         : 'No body found'
 
+    const location = document.querySelector('.topcard__flavor--bullet') ? document.querySelector('.topcard__flavor--bullet').innerText : 'No location found'
+
     // const body = 'body'
-    return { title, companyText, body }
+    return { title, company, body, location }
     // return false
   })
-  // console.log(pageContent.title, pageContent.companyText, pageContent.body)
+  // console.log(pageContent.title, pageContent.company, pageContent.body)
   return pageContent
   // } catch (error) {
 
@@ -84,12 +87,13 @@ const iteratePages = async () => {
     } catch (error) {
       console.log(`Error loading page for ${job}`)
     }
-    await page.waitFor(4000);
+    await page.waitFor(3000);
     console.log('page loaded succesfully')
     let pageResults = await scrapePage()
     pageResults.job = `${jobUrl}${job}`
     allJobs.push(pageResults)
     console.log('job loaded')
+    console.log(pageResults.location)
   }
 
 
@@ -100,12 +104,12 @@ const runMethod = async () => {
   await startPuppeteer()
   await iteratePages()
 
-  fs.writeFile(`./jobs/reactJSAllScraped.js`, JSON.stringify(allJobs), function (err) {
+  fs.writeFile(`./jobs/allScraped.js`, JSON.stringify(allJobs), function (err) {
     if (err) {
       console.log(err);
     }
     else {
-      console.log("Output saved to /reactJSAllScraped.js.");
+      console.log("Output saved to /allScraped.js.");
     }
   });
 

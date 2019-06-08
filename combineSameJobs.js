@@ -4,14 +4,14 @@ let filteredJobs
 let removedJobs = []
 
 const react = async () => {
-  await fs.readFile('./jobs/test1.js', async (err, data) => {
+  await fs.readFile('./jobs/reactAll.js', async (err, data) => {
     if (err) throw err;
     filteredJobs = await JSON.parse(data)
   });
 }
 
 const reactNative = async () => {
-  await fs.readFile('./jobs/test2.js', async (err, data) => {
+  await fs.readFile('./jobs/reactNativeAll.js', async (err, data) => {
     if (err) throw err;
     reactNativeJobs = await JSON.parse(data)
   });
@@ -24,9 +24,14 @@ combine = () => {
     filteredJobs.includes(job) ? removedJobs.push(job) : filteredJobs.push(job)
 
   }
-  console.log('f',filteredJobs)
-  console.log('r',removedJobs)
-  // console.log(filteredJobs)
+  fs.writeFile(`./jobs/allCombined.js`, JSON.stringify(filteredJobs), function (err) {
+    if (err) {
+      console.log(err);
+    }
+    else {
+      console.log("Output saved to /reactAll.js.");
+    }
+  });
 }
 
 const runFilter = async () => {
